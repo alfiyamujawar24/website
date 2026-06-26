@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NexusAI — AI-Powered Data Automation Platform</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="description" content="NexusAI is a premium AI-driven data automation platform that transforms how businesses process, analyze, and action their data at scale." />
+    <meta name="keywords" content="AI automation, data platform, machine learning, enterprise AI, data processing, business intelligence" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://nexusai-platform.vercel.app" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nexusai-platform.vercel.app" />
+    <meta property="og:title" content="NexusAI — AI-Powered Data Automation Platform" />
+    <meta property="og:description" content="Transform your data workflows with NexusAI. Enterprise-grade AI automation at scale." />
+    <meta property="og:image" content="https://nexusai-platform.vercel.app/og-image.jpg" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="NexusAI — AI-Powered Data Automation Platform" />
+    <meta name="twitter:description" content="Transform your data workflows with NexusAI. Enterprise-grade AI automation at scale." />
+
+    <!-- Fonts: Inter + JetBrains Mono (from provided assets) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ============================================================
+           CSS VARIABLES (from provided colorPallet.pdf)
+           ============================================================ */
+        :root {
+            /* Provided colors */
+            --color-arctic-powder: #F1F6F4;
+            --color-mystic-mint: #D9E8E2;
+            --color-deep-saffron: #FF9932;
+            --color-oceanic-noir: #172B36;
+            
+            /* Extended palette for premium SaaS feel */
+            --color-primary: #6C3BF5;
+            --color-primary-light: #8B6BF7;
+            --color-primary-dark: #4F29C4;
+            --color-accent: #00D4AA;
+            --color-accent-glow: rgba(0, 212, 170, 0.15);
+            --color-bg-dark: #060612;
+            --color-bg-card: rgba(255, 255, 255, 0.04);
+            --color-bg-card-hover: rgba(255, 255, 255, 0.08);
+            --color-text-primary: #FFFFFF;
+            --color-text-secondary: rgba(255, 255, 255, 0.7);
+            --color-text-muted: rgba(255, 255, 255, 0.4);
+            --color-border-subtle: rgba(255, 255, 255, 0.06);
+            --color-border-glow: rgba(108, 59, 245, 0.3);
+            
+            /* Fonts (from provided fonts.pdf) */
+            --font-display: 'JetBrains Mono', 'Inter', monospace;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            
+            /* Radius */
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            
+            /* Transitions - hardware accelerated */
+            --transition-fast: 150ms cubic-bezier(0.22, 1, 0.36, 1);
+            --transition-base: 250ms cubic-bezier(0.22, 1, 0.36, 1);
+            --transition-slow: 400ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* ============================================================
+           RESET & BASE
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg-dark);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--color-bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-primary-light); }
+
+        /* Selection */
+        ::selection { background: var(--color-primary); color: white; }
+
+        /* ============================================================
+           LOADER
+           ============================================================ */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--color-bg-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .loader-ring {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 3px solid var(--color-border-subtle);
+            border-top-color: var(--color-primary);
+            animation: spin 0.8s linear infinite;
+        }
+        .loader-text {
+            font-family: var(--font-display);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
+            animation: pulse-text 1.2s ease-in-out infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse-text {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* ============================================================
+           UTILITY CLASSES
+           ============================================================ */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--color-primary-light);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 4vw, 44px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .section-sub {
+            color: var(--color-text-secondary);
+            font-size: 17px;
+            max-width: 560px;
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--color-primary-light), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-glass {
+            background: var(--color-bg-card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-base);
+            will-change: transform, border-color, box-shadow;
+        }
+
+        .card-glass:hover {
+            background: var(--color-bg-card-hover);
+            border-color: var(--color-border-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(108, 59, 245, 0.08);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            color: #fff;
+            border: none;
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-decoration: none;
+            font-family: var(--font-body);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(108, 59, 245, 0.35);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            background: var(--color-bg-card);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-decoration: none;
+            font-family: var(--font-body);
+        }
+        .btn-secondary:hover {
+            background: var(--color-bg-card-hover);
+            border-color: var(--color-border-glow);
+            transform: translateY(-2px);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Entrance animations - 500ms total orchestration */
+        .animate-fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .animate-delay-100 { animation-delay: 100ms; }
+        .animate-delay-200 { animation-delay: 200ms; }
+        .animate-delay-300 { animation-delay: 300ms; }
+        .animate-delay-400 { animation-delay: 400ms; }
+        .animate-delay-500 { animation-delay: 500ms; }
+
+        /* ============================================================
+           HEADER / NAV
+           ============================================================ */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 0;
+            background: rgba(6, 6, 18, 0.7);
+            backdrop-filter: blur(20px) saturate(1.4);
+            -webkit-backdrop-filter: blur(20px) saturate(1.4);
+            border-bottom: 1px solid var(--color-border-subtle);
+            transition: all var(--transition-base);
+        }
+        header.scrolled {
+            background: rgba(6, 6, 18, 0.92);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--color-text-primary);
+        }
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition-base);
+            position: relative;
+        }
+        .nav-links a:hover {
+            color: var(--color-text-primary);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transition: var(--transition-base);
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .nav-cta {
+            background: var(--color-primary);
+            padding: 8px 20px;
+            border-radius: 100px;
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .nav-cta:hover {
+            background: var(--color-primary-light);
+            box-shadow: 0 8px 24px rgba(108, 59, 245, 0.3);
+        }
+        .nav-cta::after { display: none !important; }
+
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+            background: none;
+            border: none;
+        }
+        .mobile-toggle span {
+            width: 26px;
+            height: 2px;
+            background: var(--color-text-primary);
+            border-radius: 2px;
+            transition: var(--transition-base);
+        }
+
+        /* ============================================================
+           HERO
+           ============================================================ */
+        #hero {
+            padding: 140px 0 80px;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(108, 59, 245, 0.12), transparent 70%);
+            pointer-events: none;
+            animation: float-glow 8s ease-in-out infinite alternate;
+        }
+        #hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 212, 170, 0.08), transparent 70%);
+            pointer-events: none;
+            animation: float-glow 10s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes float-glow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, -30px) scale(1.1); }
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px 6px 8px;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            margin-bottom: 20px;
+        }
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(40px, 6vw, 68px);
+            font-weight: 700;
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            margin-bottom: 20px;
+        }
+
+        .hero-sub {
+            font-size: 18px;
+            color: var(--color-text-secondary);
+            max-width: 480px;
+            margin-bottom: 32px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            padding-top: 32px;
+            border-top: 1px solid var(--color-border-subtle);
+        }
+        .hero-stats-item .number {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+        .hero-stats-item .label {
+            font-size: 13px;
+            color: var(--color-text-muted);
+        }
+
+        /* Hero Visual */
+        .hero-visual {
+            position: relative;
+        }
+        .hero-visual .orb {
+            width: 100%;
+            aspect-ratio: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(108, 59, 245, 0.2), rgba(0, 212, 170, 0.05));
+            border: 1px solid var(--color-border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: orb-pulse 4s ease-in-out infinite;
+        }
+        .hero-visual .orb-inner {
+            width: 70%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 40%, var(--color-primary-light), var(--color-primary-dark));
+            opacity: 0.6;
+            animation: orb-inner 6s ease-in-out infinite alternate;
+        }
+        @keyframes orb-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        @keyframes orb-inner {
+            0% { transform: rotate(0deg) scale(1); }
+            100% { transform: rotate(180deg) scale(1.1); }
+        }
+
+        .floating-badge {
+            position: absolute;
+            padding: 12px 20px;
+            background: var(--color-bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            animation: float-badge 4s ease-in-out infinite;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .floating-badge:nth-child(2) { top: 10%; right: 5%; animation-delay: 0.5s; }
+        .floating-badge:nth-child(3) { bottom: 15%; left: 0%; animation-delay: 1s; }
+        .floating-badge:nth-child(4) { bottom: 30%; right: -5%; animation-delay: 1.5s; font-size: 11px; }
+
+        @keyframes float-badge {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ============================================================
+           FEATURES - Bento & Accordion
+           ============================================================ */
+        #features {
+            padding: 80px 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(108, 59, 245, 0.04), transparent 70%);
+        }
+
+        .section-header {
+            margin-bottom: 48px;
+        }
+        .section-header.centered {
+            text-align: center;
+        }
+        .section-header.centered .section-sub {
+            margin: 0 auto;
+        }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: minmax(120px, auto);
+            gap: 16px;
+        }
+
+        .bento-item {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            transition: all var(--transition-base);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            will-change: transform, border-color, background;
+        }
+        .bento-item:hover,
+        .bento-item.active {
+            background: var(--color-bg-card-hover);
+            border-color: var(--color-border-glow);
+            transform: translateY(-2px);
+        }
+        .bento-item .icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-sm);
+            background: rgba(108, 59, 245, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .bento-item h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .bento-item p {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+        }
+        .bento-item .arrow {
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--color-text-muted);
+            align-self: flex-start;
+            transition: var(--transition-base);
+        }
+        .bento-item:hover .arrow {
+            color: var(--color-text-primary);
+            transform: translateX(4px);
+        }
+
+        .bento-item.col-span-2 { grid-column: span 2; }
+        .bento-item.row-span-2 { grid-row: span 2; }
+
+        /* Accordion */
+        .accordion-list {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .accordion-item {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            transition: all var(--transition-base);
+        }
+        .accordion-item.active {
+            border-color: var(--color-border-glow);
+            background: var(--color-bg-card-hover);
+        }
+
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            cursor: pointer;
+            gap: 16px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--color-text-primary);
+            font-family: var(--font-body);
+            font-size: inherit;
+        }
+        .accordion-header .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .accordion-header .left .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            background: rgba(108, 59, 245, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .accordion-header .left h4 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .accordion-header .chevron {
+            transition: var(--transition-base);
+            font-size: 14px;
+            color: var(--color-text-muted);
+        }
+        .accordion-item.active .chevron {
+            transform: rotate(180deg);
+            color: var(--color-text-primary);
+        }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-slow);
+            padding: 0 20px;
+        }
+        .accordion-item.active .accordion-body {
+            max-height: 120px;
+            padding: 0 20px 20px;
+        }
+        .accordion-body p {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ============================================================
+           PRICING
+           ============================================================ */
+        #pricing {
+            padding: 80px 0;
+            background: radial-gradient(ellipse at 50% 100%, rgba(0, 212, 170, 0.04), transparent 70%);
+        }
+
+        .pricing-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+
+        .billing-toggle {
+            display: flex;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: 100px;
+            padding: 4px;
+            gap: 4px;
+        }
+        .billing-toggle button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 100px;
+            background: transparent;
+            color: var(--color-text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: var(--font-body);
+        }
+        .billing-toggle button.active {
+            background: var(--color-primary);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(108, 59, 245, 0.3);
+        }
+        .billing-toggle button:hover:not(.active) {
+            color: var(--color-text-primary);
+        }
+
+        .currency-select {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: 100px;
+            padding: 8px 16px;
+            color: var(--color-text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: var(--font-body);
+            outline: none;
+            min-width: 80px;
+        }
+        .currency-select option {
+            background: var(--color-bg-dark);
+            color: var(--color-text-primary);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .pricing-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-md);
+            padding: 32px 28px;
+            transition: all var(--transition-base);
+            position: relative;
+            text-align: center;
+        }
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-border-glow);
+        }
+        .pricing-card.popular {
+            border-color: var(--color-primary);
+            background: rgba(108, 59, 245, 0.05);
+        }
+        .pricing-card.popular .badge {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-primary);
+            padding: 4px 16px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .pricing-card .plan-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .pricing-card .plan-desc {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            margin-bottom: 20px;
+        }
+        .pricing-card .price {
+            font-family: var(--font-display);
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .pricing-card .price .currency {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+        }
+        .pricing-card .price .period {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--color-text-muted);
+        }
+        .pricing-card .price .discount {
+            display: none;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-accent);
+            background: var(--color-accent-glow);
+            padding: 2px 10px;
+            border-radius: 100px;
+            margin-left: 8px;
+        }
+        .pricing-card .price .discount.visible {
+            display: inline-block;
+        }
+
+        .pricing-card .features-list {
+            list-style: none;
+            margin: 24px 0 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: left;
+        }
+        .pricing-card .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+        .pricing-card .features-list li .check {
+            color: var(--color-accent);
+            font-weight: 700;
+        }
+
+        .pricing-card .btn-plan {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: var(--font-body);
+            background: var(--color-bg-card-hover);
+            color: var(--color-text-primary);
+        }
+        .pricing-card .btn-plan:hover {
+            background: var(--color-primary);
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(108, 59, 245, 0.25);
+        }
+        .pricing-card.popular .btn-plan {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .pricing-card.popular .btn-plan:hover {
+            background: var(--color-primary-light);
+            box-shadow: 0 8px 24px rgba(108, 59, 245, 0.35);
+        }
+
+        /* ============================================================
+           SOCIAL PROOF
+           ============================================================ */
+        #social-proof {
+            padding: 80px 0;
+            background: var(--color-bg-card);
+            border-top: 1px solid var(--color-border-subtle);
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+
+        .proof-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .proof-item {
+            text-align: center;
+            padding: 24px;
+        }
+        .proof-item .stars {
+            color: var(--color-deep-saffron);
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .proof-item .quote {
+            font-size: 15px;
+            color: var(--color-text-secondary);
+            font-style: italic;
+            line-height: 1.6;
+        }
+        .proof-item .author {
+            margin-top: 12px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .proof-item .title {
+            font-size: 12px;
+            color: var(--color-text-muted);
+        }
+
+        /* Trust logos */
+        .trust-logos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 48px;
+        }
+        .trust-logo {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text-muted);
+            opacity: 0.5;
+            transition: all var(--transition-base);
+            letter-spacing: 1px;
+        }
+        .trust-logo:hover {
+            opacity: 1;
+            color: var(--color-text-primary);
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--color-border-subtle);
+        }
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-inner .copy {
+            font-size: 13px;
+            color: var(--color-text-muted);
+        }
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+        .footer-links a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            transition: var(--transition-base);
+        }
+        .footer-links a:hover {
+            color: var(--color-text-primary);
+        }
+
+        /* ============================================================
+           RESPONSIVE BREAKPOINTS
+           ============================================================ */
+        @media (max-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-sub {
+                max-width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-actions {
+                justify-content: center;
+            }
+            .hero-stats {
+                justify-content: center;
+            }
+            .hero-visual .orb {
+                max-width: 320px;
+            }
+            .pricing-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .pricing-grid .pricing-card:last-child {
+                grid-column: 1 / -1;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .bento-item.col-span-2 {
+                grid-column: span 1;
+            }
+            .bento-item.row-span-2 {
+                grid-row: span 1;
+            }
+            .proof-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .trust-logos {
+                gap: 24px;
+            }
+            .trust-logo {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: var(--color-bg-dark);
+                padding: 24px;
+                border-bottom: 1px solid var(--color-border-subtle);
+                gap: 16px;
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .mobile-toggle {
+                display: flex;
+            }
+
+            .hero-title {
+                font-size: 32px;
+            }
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 20px;
+                justify-content: center;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            .pricing-grid .pricing-card:last-child {
+                grid-column: 1;
+                max-width: 100%;
+            }
+
+            /* Bento → Accordion */
+            .bento-grid {
+                display: none;
+            }
+            .accordion-list {
+                display: flex;
+            }
+
+            .proof-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+            .pricing-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+            #hero {
+                padding: 120px 0 60px;
+                min-height: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+            .hero-title {
+                font-size: 28px;
+            }
+            .hero-actions .btn-primary,
+            .hero-actions .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+            .pricing-card {
+                padding: 24px 20px;
+            }
+            .pricing-card .price {
+                font-size: 32px;
+            }
+            .trust-logos {
+                gap: 16px;
+            }
+            .trust-logo {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    LOADER
+    ============================================================ -->
+    <div id="loader" role="status" aria-label="Loading">
+        <div class="loader-ring"></div>
+        <div class="loader-text">Loading NexusAI</div>
+    </div>
+
+    <!-- ============================================================
+    HEADER
+    ============================================================ -->
+    <header role="banner">
+        <div class="container nav-inner">
+            <a href="#" class="logo" aria-label="NexusAI Home">
+                <span class="logo-icon">◆</span>
+                NexusAI
+            </a>
+            <nav aria-label="Main navigation">
+                <ul class="nav-links" id="navLinks" role="menubar">
+                    <li role="none"><a href="#features" role="menuitem">Features</a></li>
+                    <li role="none"><a href="#pricing" role="menuitem">Pricing</a></li>
+                    <li role="none"><a href="#social-proof" role="menuitem">Testimonials</a></li>
+                    <li role="none"><a href="#pricing" class="nav-cta" role="menuitem">Get Started</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
+    <main>
+
+        <!-- ==========================================================
+        HERO SECTION
+        ========================================================== -->
+        <section id="hero" aria-labelledby="hero-title">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <div class="hero-badge animate-fade-up animate-delay-100">
+                            <span class="dot"></span>
+                            Now in Public Beta
+                        </div>
+                        <h1 id="hero-title" class="hero-title animate-fade-up animate-delay-200">
+                            Automate Data<br />
+                            <span class="text-gradient">at the Speed of AI</span>
+                        </h1>
+                        <p class="hero-sub animate-fade-up animate-delay-300">
+                            NexusAI transforms raw data into actionable intelligence.
+                            Process millions of records, detect patterns, and automate
+                            workflows — all in one unified platform.
+                        </p>
+                        <div class="hero-actions animate-fade-up animate-delay-400">
+                            <a href="#pricing" class="btn-primary">
+                                Start Free Trial
+                                <span aria-hidden="true">→</span>
+                            </a>
+                            <a href="#features" class="btn-secondary">
+                                Explore Features
+                            </a>
+                        </div>
+                        <div class="hero-stats animate-fade-up animate-delay-500">
+                            <div class="hero-stats-item">
+                                <div class="number">12B+</div>
+                                <div class="label">Data Points Processed</div>
+                            </div>
+                            <div class="hero-stats-item">
+                                <div class="number">99.9%</div>
+                                <div class="label">Uptime Guarantee</div>
+                            </div>
+                            <div class="hero-stats-item">
+                                <div class="number">4.9★</div>
+                                <div class="label">User Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-visual animate-fade-up animate-delay-300">
+                        <div class="orb">
+                            <div class="orb-inner"></div>
+                            <div class="floating-badge">⚡ 2.4x Faster</div>
+                            <div class="floating-badge">🧠 98% Accuracy</div>
+                            <div class="floating-badge">🔒 SOC2 Certified</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================
+        FEATURES - Bento & Accordion (Feature 2)
+        ========================================================== -->
+        <section id="features" aria-labelledby="features-title">
+            <div class="container">
+                <div class="section-header centered">
+                    <span class="section-label">Capabilities</span>
+                    <h2 id="features-title" class="section-title">Built for the Future of Data</h2>
+                    <p class="section-sub">
+                        Every feature is designed to handle the complexity of modern
+                        data workflows with speed, precision, and simplicity.
+                    </p>
+                </div>
+
+                <!-- Bento Grid (Desktop) -->
+                <div class="bento-grid" id="bentoGrid" role="list">
+                    <div class="bento-item col-span-2" data-index="0" role="listitem" tabindex="0">
+                        <div>
+                            <div class="icon-wrap">⚡</div>
+                            <h4>Real-Time Processing</h4>
+                            <p>Stream millions of events with sub-100ms latency and automatic scaling.</p>
+                        </div>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="bento-item" data-index="1" role="listitem" tabindex="0">
+                        <div>
+                            <div class="icon-wrap">🧠</div>
+                            <h4>AI Analytics</h4>
+                            <p>Predictive models and anomaly detection trained on your data.</p>
+                        </div>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="bento-item row-span-2" data-index="2" role="listitem" tabindex="0">
+                        <div>
+                            <div class="icon-wrap">🔗</div>
+                            <h4>50+ Integrations</h4>
+                            <p>Connect to databases, CRMs, cloud storage, and APIs in seconds.</p>
+                        </div>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="bento-item" data-index="3" role="listitem" tabindex="0">
+                        <div>
+                            <div class="icon-wrap">📊</div>
+                            <h4>Visual Dashboards</h4>
+                            <p>Drag-and-drop reports with live data and collaboration tools.</p>
+                        </div>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="bento-item" data-index="4" role="listitem" tabindex="0">
+                        <div>
+                            <div class="icon-wrap">🔒</div>
+                            <h4>Enterprise Security</h4>
+                            <p>SOC2, GDPR, and HIPAA compliant with end-to-end encryption.</p>
+                        </div>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="bento-item col-span-2" data-index="5" role="listitem" tabindex="0">
+                        <div>
+                            <div class="icon-wrap">🤖</div>
+                            <h4>Workflow Automation</h4>
+                            <p>Build complex pipelines with no-code triggers and actions.</p>
+                        </div>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+
+                <!-- Accordion (Mobile) -->
+                <div class="accordion-list" id="accordionList" role="list">
+                    <div class="accordion-item" data-index="0" role="listitem">
+                        <button class="accordion-header" role="button" aria-expanded="false">
+                            <div class="left">
+                                <span class="icon">⚡</span>
+                                <h4>Real-Time Processing</h4>
+                            </div>
+                            <span class="chevron">▼</span>
+                        </button>
+                        <div class="accordion-body">
+                            <p>Stream millions of events with sub-100ms latency and automatic scaling.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item" data-index="1" role="listitem">
+                        <button class="accordion-header" role="button" aria-expanded="false">
+                            <div class="left">
+                                <span class="icon">🧠</span>
+                                <h4>AI Analytics</h4>
+                            </div>
+                            <span class="chevron">▼</span>
+                        </button>
+                        <div class="accordion-body">
+                            <p>Predictive models and anomaly detection trained on your data.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item" data-index="2" role="listitem">
+                        <button class="accordion-header" role="button" aria-expanded="false">
+                            <div class="left">
+                                <span class="icon">🔗</span>
+                                <h4>50+ Integrations</h4>
+                            </div>
+                            <span class="chevron">▼</span>
+                        </button>
+                        <div class="accordion-body">
+                            <p>Connect to databases, CRMs, cloud storage, and APIs in seconds.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item" data-index="3" role="listitem">
+                        <button class="accordion-header" role="button" aria-expanded="false">
+                            <div class="left">
+                                <span class="icon">📊</span>
+                                <h4>Visual Dashboards</h4>
+                            </div>
+                            <span class="chevron">▼</span>
+                        </button>
+                        <div class="accordion-body">
+                            <p>Drag-and-drop reports with live data and collaboration tools.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item" data-index="4" role="listitem">
+                        <button class="accordion-header" role="button" aria-expanded="false">
+                            <div class="left">
+                                <span class="icon">🔒</span>
+                                <h4>Enterprise Security</h4>
+                            </div>
+                            <span class="chevron">▼</span>
+                        </button>
+                        <div class="accordion-body">
+                            <p>SOC2, GDPR, and HIPAA compliant with end-to-end encryption.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item" data-index="5" role="listitem">
+                        <button class="accordion-header" role="button" aria-expanded="false">
+                            <div class="left">
+                                <span class="icon">🤖</span>
+                                <h4>Workflow Automation</h4>
+                            </div>
+                            <span class="chevron">▼</span>
+                        </button>
+                        <div class="accordion-body">
+                            <p>Build complex pipelines with no-code triggers and actions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================
+        PRICING (Feature 1)
+        ========================================================== -->
+        <section id="pricing" aria-labelledby="pricing-title">
+            <div class="container">
+                <div class="section-header centered">
+                    <span class="section-label">Pricing</span>
+                    <h2 id="pricing-title" class="section-title">Choose Your Plan</h2>
+                    <p class="section-sub">
+                        Flexible pricing that scales with your business. No hidden fees.
+                    </p>
+                </div>
+
+                <div class="pricing-controls">
+                    <div class="billing-toggle" role="group" aria-label="Billing cycle toggle">
+                        <button class="active" data-cycle="monthly" aria-pressed="true">Monthly</button>
+                        <button data-cycle="annual" aria-pressed="false">Annual <span style="color:var(--color-accent);font-size:11px;margin-left:4px;">−20%</span></button>
+                    </div>
+                    <select class="currency-select" id="currencySelect" aria-label="Select currency">
+                        <option value="usd">USD ($)</option>
+                        <option value="eur">EUR (€)</option>
+                        <option value="inr">INR (₹)</option>
+                    </select>
+                </div>
+
+                <div class="pricing-grid" id="pricingGrid">
+                    <!-- Starter -->
+                    <div class="pricing-card" data-plan="starter">
+                        <div class="plan-name">Starter</div>
+                        <div class="plan-desc">For small teams and projects</div>
+                        <div class="price">
+                            <span class="currency" data-currency-symbol="$">$</span>
+                            <span class="amount" data-price="49">49</span>
+                            <span class="period">/mo</span>
+                            <span class="discount">−20%</span>
+                        </div>
+                        <ul class="features-list">
+                            <li><span class="check">✓</span> Up to 50K records/month</li>
+                            <li><span class="check">✓</span> 5 team members</li>
+                            <li><span class="check">✓</span> Basic analytics</li>
+                            <li><span class="check">✓</span> Email support</li>
+                        </ul>
+                        <button class="btn-plan">Start Free Trial</button>
+                    </div>
+
+                    <!-- Pro (Popular) -->
+                    <div class="pricing-card popular" data-plan="pro">
+                        <span class="badge">Most Popular</span>
+                        <div class="plan-name">Professional</div>
+                        <div class="plan-desc">For growing businesses</div>
+                        <div class="price">
+                            <span class="currency" data-currency-symbol="$">$</span>
+                            <span class="amount" data-price="99">99</span>
+                            <span class="period">/mo</span>
+                            <span class="discount">−20%</span>
+                        </div>
+                        <ul class="features-list">
+                            <li><span class="check">✓</span> Up to 1M records/month</li>
+                            <li><span class="check">✓</span> 20 team members</li>
+                            <li><span class="check">✓</span> Advanced analytics + AI</li>
+                            <li><span class="check">✓</span> Priority support</li>
+                            <li><span class="check">✓</span> Custom integrations</li>
+                        </ul>
+                        <button class="btn-plan">Start Free Trial</button>
+                    </div>
+
+                    <!-- Enterprise -->
+                    <div class="pricing-card" data-plan="enterprise">
+                        <div class="plan-name">Enterprise</div>
+                        <div class="plan-desc">For large organizations</div>
+                        <div class="price">
+                            <span class="currency" data-currency-symbol="$">$</span>
+                            <span class="amount" data-price="249">249</span>
+                            <span class="period">/mo</span>
+                            <span class="discount">−20%</span>
+                        </div>
+                        <ul class="features-list">
+                            <li><span class="check">✓</span> Unlimited records</li>
+                            <li><span class="check">✓</span> Unlimited team members</li>
+                            <li><span class="check">✓</span> Full AI suite</li>
+                            <li><span class="check">✓</span> 24/7 dedicated support</li>
+                            <li><span class="check">✓</span> SSO & advanced security</li>
+                        </ul>
+                        <button class="btn-plan">Contact Sales</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================
+        SOCIAL PROOF
+        ========================================================== -->
+        <section id="social-proof" aria-labelledby="proof-title">
+            <div class="container">
+                <div class="section-header centered">
+                    <span class="section-label">Testimonials</span>
+                    <h2 id="proof-title" class="section-title">Trusted by Teams Worldwide</h2>
+                </div>
+
+                <!-- Trust logos (using provided color palette) -->
+                <div class="trust-logos">
+                    <span class="trust-logo" style="color:var(--color-arctic-powder);">TechCorp</span>
+                    <span class="trust-logo" style="color:var(--color-mystic-mint);">DataFlow</span>
+                    <span class="trust-logo" style="color:var(--color-deep-saffron);">CloudSphere</span>
+                    <span class="trust-logo" style="color:var(--color-arctic-powder);">HealthAI</span>
+                    <span class="trust-logo" style="color:var(--color-mystic-mint);">SecureStack</span>
+                    <span class="trust-logo" style="color:var(--color-deep-saffron);">NexusCorp</span>
+                </div>
+
+                <!-- Testimonials -->
+                <div class="proof-grid">
+                    <div class="proof-item card-glass">
+                        <div class="stars">★★★★★</div>
+                        <p class="quote">"NexusAI cut our data processing time by 70%. We're now shipping insights 5x faster."</p>
+                        <div class="author">Sarah Chen</div>
+                        <div class="title">CTO, DataFlow Inc.</div>
+                    </div>
+                    <div class="proof-item card-glass">
+                        <div class="stars">★★★★★</div>
+                        <p class="quote">"The automation capabilities are incredible. We saved 200+ engineering hours in the first month."</p>
+                        <div class="author">Michael Torres</div>
+                        <div class="title">VP Engineering, CloudSphere</div>
+                    </div>
+                    <div class="proof-item card-glass">
+                        <div class="stars">★★★★★</div>
+                        <p class="quote">"Finally, an AI platform that delivers on its promises. The ROI is undeniable."</p>
+                        <div class="author">Dr. Emily Park</div>
+                        <div class="title">Head of Data Science, HealthAI</div>
+                    </div>
+                    <div class="proof-item card-glass">
+                        <div class="stars">★★★★★</div>
+                        <p class="quote">"Best-in-class security and performance. Our SOC2 audit was a breeze."</p>
+                        <div class="author">James Okafor</div>
+                        <div class="title">CISO, SecureStack</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer role="contentinfo">
+        <div class="container footer-inner">
+            <span class="copy">&copy; 2026 NexusAI. All rights reserved.</span>
+            <ul class="footer-links">
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Terms</a></li>
+                <li><a href="#">Security</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+    JAVASCRIPT - All features implemented from scratch
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            // 1. LOADER - Complete within 500ms
+            // ============================================================
+            const loader = document.getElementById('loader');
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    loader.classList.add('hidden');
+                }, 400); // < 500ms threshold
+            });
+
+            // ============================================================
+            // 2. MOBILE NAV
+            // ============================================================
+            const toggleBtn = document.getElementById('mobileToggle');
+            const navLinks = document.getElementById('navLinks');
+            toggleBtn.addEventListener('click', function() {
+                const isOpen = navLinks.classList.toggle('open');
+                toggleBtn.setAttribute('aria-expanded', isOpen);
+            });
+
+            // Close nav on link click
+            navLinks.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    navLinks.classList.remove('open');
+                    toggleBtn.setAttribute('aria-expanded', 'false');
+                });
+            });
+
+            // ============================================================
+            // 3. HEADER SCROLL EFFECT
+            // ============================================================
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // ============================================================
+            // 4. FEATURE 2: BENTO → ACCORDION with State Persistence
+            // ============================================================
+            const bentoGrid = document.getElementById('bentoGrid');
+            const accordionList = document.getElementById('accordionList');
+            const bentoItems = bentoGrid.querySelectorAll('.bento-item');
+            const accordionItems = accordionList.querySelectorAll('.accordion-item');
+
+            let activeIndex = -1;
+            let isMobile = window.innerWidth <= 768;
+
+            // --- Bento hover/focus tracking ---
+            bentoItems.forEach(function(item) {
+                item.addEventListener('mouseenter', function() {
+                    const idx = parseInt(this.dataset.index, 10);
+                    setActiveFeature(idx);
+                });
+                item.addEventListener('focusin', function() {
+                    const idx = parseInt(this.dataset.index, 10);
+                    setActiveFeature(idx);
+                });
+            });
+
+            // --- Accordion toggle ---
+            accordionItems.forEach(function(item) {
+                const header = item.querySelector('.accordion-header');
+                header.addEventListener('click', function() {
+                    const idx = parseInt(item.dataset.index, 10);
+                    toggleAccordion(idx);
+                });
+                header.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const idx = parseInt(item.dataset.index, 10);
+                        toggleAccordion(idx);
+                    }
+                });
+            });
+
+            function setActiveFeature(index) {
+                activeIndex = index;
+                // Highlight bento item
+                bentoItems.forEach(function(el) {
+                    const idx = parseInt(el.dataset.index, 10);
+                    if (idx === index) {
+                        el.classList.add('active');
+                    } else {
+                        el.classList.remove('active');
+                    }
+                });
+            }
+
+            function toggleAccordion(index) {
+                accordionItems.forEach(function(el) {
+                    const idx = parseInt(el.dataset.index, 10);
+                    const headerBtn = el.querySelector('.accordion-header');
+                    if (idx === index) {
+                        const isActive = el.classList.toggle('active');
+                        headerBtn.setAttribute('aria-expanded', isActive);
+                        if (isActive) {
+                            activeIndex = index;
+                            // Also highlight bento if visible
+                            bentoItems.forEach(function(b) {
+                                const bi = parseInt(b.dataset.index, 10);
+                                if (bi === index) {
+                                    b.classList.add('active');
+                                } else {
+                                    b.classList.remove('active');
+                                }
+                            });
+                        }
+                    } else {
+                        el.classList.remove('active');
+                        headerBtn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+
+            // --- Resize: Context Lock ---
+            let resizeTimer;
+
+            function handleResize() {
+                const nowMobile = window.innerWidth <= 768;
+
+                if (isMobile !== nowMobile && activeIndex >= 0) {
+                    if (nowMobile) {
+                        // Desktop → Mobile: open accordion at activeIndex
+                        accordionItems.forEach(function(el) {
+                            const idx = parseInt(el.dataset.index, 10);
+                            const headerBtn = el.querySelector('.accordion-header');
+                            if (idx === activeIndex) {
+                                el.classList.add('active');
+                                headerBtn.setAttribute('aria-expanded', 'true');
+                            } else {
+                                el.classList.remove('active');
+                                headerBtn.setAttribute('aria-expanded', 'false');
+                            }
+                        });
+                    } else {
+                        // Mobile → Desktop: highlight bento at activeIndex
+                        bentoItems.forEach(function(el) {
+                            const idx = parseInt(el.dataset.index, 10);
+                            if (idx === activeIndex) {
+                                el.classList.add('active');
+                            } else {
+                                el.classList.remove('active');
+                            }
+                        });
+                        // Close all accordion
+                        accordionItems.forEach(function(el) {
+                            el.classList.remove('active');
+                            const headerBtn = el.querySelector('.accordion-header');
+                            headerBtn.setAttribute('aria-expanded', 'false');
+                        });
+                    }
+                }
+                isMobile = nowMobile;
+            }
+
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(handleResize, 150);
+            });
+
+            // Initial check
+            handleResize();
+
+            // ============================================================
+            // 5. FEATURE 1: MATRIX-DRIVEN PRICING
+            // ============================================================
+            // Multi-dimensional configuration matrix
+            const PRICING_MATRIX = {
+                base: {
+                    starter: { usd: 49, eur: 45, inr: 3999 },
+                    pro: { usd: 99, eur: 91, inr: 7999 },
+                    enterprise: { usd: 249, eur: 229, inr: 19999 },
+                },
+                annualDiscount: 0.20,
+                tariffs: {
+                    usd: 1.0,
+                    eur: 0.92,
+                    inr: 83.5,
+                },
+                symbols: {
+                    usd: '$',
+                    eur: '€',
+                    inr: '₹',
+                }
+            };
+
+            let currentCycle = 'monthly';
+            let currentCurrency = 'usd';
+
+            // DOM refs for isolated price updates
+            const priceAmounts = document.querySelectorAll('.amount');
+            const priceCurrencies = document.querySelectorAll('.currency');
+            const discountBadges = document.querySelectorAll('.discount');
+
+            // Billing toggle
+            const toggleBtns = document.querySelectorAll('.billing-toggle button');
+            toggleBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    toggleBtns.forEach(function(b) {
+                        b.classList.remove('active');
+                        b.setAttribute('aria-pressed', 'false');
+                    });
+                    this.classList.add('active');
+                    this.setAttribute('aria-pressed', 'true');
+                    currentCycle = this.dataset.cycle;
+                    updatePrices();
+                });
+            });
+
+            // Currency select - isolated update
+            const currencySelect = document.getElementById('currencySelect');
+            currencySelect.addEventListener('change', function() {
+                currentCurrency = this.value;
+                updatePrices();
+            });
+
+            function updatePrices() {
+                const isAnnual = currentCycle === 'annual';
+                const tariff = PRICING_MATRIX.tariffs[currentCurrency];
+                const symbol = PRICING_MATRIX.symbols[currentCurrency];
+                const discount = PRICING_MATRIX.annualDiscount;
+
+                const cards = document.querySelectorAll('.pricing-card');
+
+                cards.forEach(function(card) {
+                    const plan = card.dataset.plan;
+                    const basePrice = PRICING_MATRIX.base[plan]?.[currentCurrency] || 0;
+
+                    // Calculate final price
+                    let finalPrice = basePrice * tariff;
+                    if (isAnnual) {
+                        finalPrice = finalPrice * (1 - discount);
+                    }
+                    finalPrice = Math.round(finalPrice * 100) / 100;
+
+                    // Update DOM nodes directly (isolated - no parent re-render)
+                    const amountEl = card.querySelector('.amount');
+                    const currencyEl = card.querySelector('.currency');
+                    const discountEl = card.querySelector('.discount');
+
+                    if (amountEl) {
+                        if (currentCurrency === 'inr') {
+                            amountEl.textContent = Math.round(finalPrice).toLocaleString('en-IN');
+                        } else {
+                            amountEl.textContent = finalPrice.toFixed(2);
+                        }
+                    }
+                    if (currencyEl) {
+                        currencyEl.textContent = symbol;
+                    }
+                    if (discountEl) {
+                        if (isAnnual) {
+                            discountEl.classList.add('visible');
+                        } else {
+                            discountEl.classList.remove('visible');
+                        }
+                    }
+                });
+            }
+
+            // Initial render
+            updatePrices();
+
+            // ============================================================
+            // 6. SMOOTH SCROLL
+            // ============================================================
+            document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+                anchor.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+        })();
+    </script>
+
+</body>
+</html>
